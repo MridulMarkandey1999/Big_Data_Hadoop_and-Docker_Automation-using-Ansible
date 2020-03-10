@@ -1,0 +1,64 @@
+#installing hadoop, jdk and updating bashrc file
+- hosts: 192.168.43.111, 192.168.43.141, 192.168.43.46, 192.168.43.160, 192.168.43.145
+  vars:
+        - path: "/root/Desktop"
+
+  tasks:
+        - copy:
+                src: "{{path}}/hadoop-1.2.1-1.x86_64.rpm"
+                dest: "{{path}}/"
+        - command: "rpm -ivh {{path}}/hadoop-1.2.1-1.x86_64.rpm --force"
+         
+        - copy:
+                src: "{{path}}/jdk-8u171-linux-x64.rpm"
+                dest: "{{path}}/"
+        - command: "rpm -ivh {{path}}/jdk-8u171-linux-x64.rpm --force"
+        - copy:
+                src: "~/.bashrc"
+                dest: "~/"  
+
+#core-site.xml
+- hosts: 192.168.43.141, 192.168.43.111,  192.168.43.160, 192.168.43.145, 192.168.43.46
+  vars:
+        - hdpath: "/etc/hadoop/"
+        - path: "/root/Desktop/reps/"
+
+  tasks:
+        - copy:
+                src: "{{path}}/utilities/namenode/core-site.xml"
+                dest: "{{hdpath}}"
+
+#hdfs-site.xml (datanode)
+- hosts: 192.168.43.111, 192.168.43.160
+  vars:
+        - hdpath: "/etc/hadoop/"
+        - path: "/root/Desktop/reps"
+
+  tasks:
+        - copy:
+                src: "{{path}}/utilities/datanode/hdfs-site.xml"
+                dest: "{{hdpath}}"
+
+#hdfs-site.xml (namenode)
+- hosts: 192.168.43.141
+  vars:
+        - hdpath: "/etc/hadoop/"
+        - path: "/root/Desktop/reps"
+
+  tasks:
+        - copy:
+                src: "{{path}}/utilities/namenode/hdfs-site.xml"
+                dest: "{{hdpath}}"
+        - command: "hadoop namenode -format"
+
+
+#mapred-site.xml
+- hosts: 192.168.43.111,  192.168.43.160, 192.168.43.145, 192.168.43.46
+  vars:
+        - hdpath: "/etc/hadoop/"
+        - path: "/root/Desktop/reps"
+
+  tasks:
+        - copy:
+                src: "{{path}}/utilities/datanode/mapred-site.xml"
+                dest: "{{hdpath}}"

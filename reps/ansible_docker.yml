@@ -1,0 +1,19 @@
+- hosts: all
+  vars:
+        path: "/tmp/"
+        d: "date" 
+  tasks:
+        - package:
+                name: "docker-ce"
+                state: present
+        - copy:
+                src: "/root/Desktop/rhel7_5_software_extras/centos-latest.tar"
+                dest: "{{path}}"
+
+        - command: "systemctl start docker"
+        - command: "cd {{path}} && docker load -i centos-latest.tar"
+        - command: "cd {{path}} && docker run -it -d --name os1 centos:latest"
+        - command: "cd {{path}} && docker exec os1 {{d}}"
+          register: c
+        - debug:
+                msg: "{{c}}"
